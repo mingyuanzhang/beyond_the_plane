@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101b21">
+  <meta name="description" content="Live in a plane. See a line. Discover the solid passing through your world.">
+  <title>Beyond the Plane — a dimensional detective game</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="src/geometry.js"></script>
+  <script defer src="src/model.js"></script>
+  <script defer src="src/render.js"></script>
+  <script defer src="src/app.js"></script>
+</head>
+<body>
+  <main>
+    <header class="masthead">
+      <a class="brand" href="./" aria-label="Beyond the Plane home"><span class="brand-mark" aria-hidden="true">⊙</span> BEYOND THE PLANE</a>
+      <button class="quiet" id="help">How to observe <span aria-hidden="true">↗</span></button>
+    </header>
+    <section class="intro">
+      <div><p class="eyebrow">A FIELD GUIDE TO THE UNSEEN</p><h1>Your world is a line.<br><em>Think beyond it.</em></h1></div>
+      <p class="intro-copy">Something is passing through your two-dimensional world. Freeze a moment. Walk around it. Follow the evidence into another dimension.</p>
+    </section>
+    <nav class="levels" aria-label="Puzzles"><span class="eyebrow">EXPERIMENT</span><div id="level-buttons"></div><span id="progress">0 / 20 solved</span></nav>
+    <section class="workspace">
+      <div class="observation panel">
+        <div class="panel-heading"><div><p class="eyebrow" id="chapter">01 / FIRST CONTACT</p><h2 id="level-title">A passing presence</h2></div><span class="badge" id="time-status">TIME FLOWING</span></div>
+        <div class="vision-wrap"><canvas id="vision" role="img" aria-label="Your one-dimensional view: visible colored segments of the cross-section"></canvas><div class="vision-caption"><span>YOUR ENTIRE FIELD OF VISION</span><span id="view-readout">Looking toward the center</span></div></div>
+        <p class="clue" id="clue"></p>
+        <section class="time-controls" aria-label="Time controls">
+          <div class="control-label"><span><b>01</b> Explore time</span><output id="time-value" for="timeline">0%</output></div>
+          <input id="timeline" type="range" min="0" max="1000" value="120" aria-label="Object passage time">
+          <div class="range-labels"><span>BEFORE ARRIVAL</span><span>AFTER DEPARTURE</span></div>
+          <div class="transport"><button id="rewind" title="Play backward (R)" aria-label="Play backward">↶ <span>Reverse</span></button><button id="play" class="primary" title="Freeze or resume time (Space)">Ⅱ Freeze time</button><button id="restart" title="Return to the beginning">↤ <span>Restart</span></button><label class="speed">Speed <select id="speed" aria-label="Playback speed"><option value="0.5">½×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div>
+        </section>
+        <section class="movement-controls" aria-label="Observer movement">
+          <div class="control-label"><span><b>02</b> Change your viewpoint</span><output id="angle-value" for="angle">0°</output></div>
+          <div class="orbit-row"><button id="orbit-left" aria-label="Move around the object counterclockwise">↶</button><input id="angle" type="range" min="0" max="360" value="0" aria-label="Position around the object in degrees"><button id="orbit-right" aria-label="Move around the object clockwise">↷</button></div>
+          <p class="small">Walk a full circle, always facing the center. Movement works while time is frozen.</p>
+        </section>
+        <div class="guess-prompt"><div><p class="eyebrow">FORM YOUR OWN HYPOTHESIS</p><p class="small">Build the shape in your mind. The candidates appear only when you’re ready.</p></div><button id="ready" class="primary" aria-haspopup="dialog">Ready to guess →</button></div>
+      </div>
+
+    </section>
+    <section id="result" class="panel result" hidden aria-labelledby="result-title">
+      <div class="result-copy"><p class="eyebrow" id="result-label">THE REVEAL</p><h2 id="result-title" tabindex="-1"></h2><p id="explanation"></p><p class="small">The amber plane is your world. The bright contour is its cross-section. Use the same time and viewpoint controls above to connect this solid to your line of sight.</p><div class="result-actions"><button id="next" class="primary">Next experiment →</button><button id="retry">Observe again</button></div></div>
+      <div class="reveal-wrap"><canvas id="reveal" role="img" aria-label="3D reveal of the object, intersecting world plane, cross-section, and observer"></canvas><span class="small">3D RECONSTRUCTION · DRAG TO ORBIT</span></div>
+    </section>
+    <footer><span>ONE DIMENSION OF VISION. THREE DIMENSIONS OF POSSIBILITY.</span><span><kbd>Space</kbd> freeze · <kbd>←</kbd> <kbd>→</kbd> move · <kbd>R</kbd> reverse</span></footer>
+  </main>
+  <dialog id="guess-dialog" aria-labelledby="answer-title">
+    <button id="close-guess" class="dialog-close" aria-label="Return to observation">✕</button>
+    <p class="eyebrow">MAKE THE DIMENSIONAL LEAP</p><h2 id="answer-title">Which solid fits your observations?</h2>
+    <p class="small">Choose the shape that explains the whole passage. All candidates use the same scale and passage orientation.</p>
+    <div id="choices"></div>
+    <label class="candidate-view small" for="candidate-angle">Inspect the candidates <input id="candidate-angle" type="range" min="0" max="360" value="41" aria-label="Rotate all candidate previews"></label>
+    <div class="guess-actions"><button id="back-observe">Keep observing</button><button class="primary" id="submit" disabled>Choose a solid above</button></div>
+  </dialog>
+  <dialog id="help-dialog"><button id="close-help" class="dialog-close" aria-label="Close instructions">✕</button><p class="eyebrow">A DIFFERENT WAY OF SEEING</p><h2>You live inside a plane.</h2><p>A solid passing through your world creates a <strong>2D cross-section</strong>. Because your eyes live in that same plane, you see its edges as a strip of colored light.</p><ol><li><strong>Follow time.</strong> Watch the strip grow, shrink, split, or stay the same. Drag the timeline to any instant.</li><li><strong>Freeze and walk.</strong> Pause time, then circle the slice. A square and a circle can look similar from one direction.</li><li><strong>Make a hypothesis.</strong> Build a mental picture first. Select Ready to guess to see the candidates, then choose one and reveal the answer. You can close the choices and keep observing at any time.</li></ol><p>All powers are yours from the beginning. Every object travels straight through your world at the same speed. Your walking distance stays fixed; brighter edges face you more directly. Candidate colors are identical, so shape is the clue.</p><p class="small">Keyboard: Space to pause/resume; A/D or left/right arrows to walk; R to reverse; [ and ] to step time. Range sliders also support their usual arrow keys. On touch, use the sliders or hold the movement buttons.</p><button id="begin" class="primary">Let’s investigate →</button></dialog>
+</body>
+</html>

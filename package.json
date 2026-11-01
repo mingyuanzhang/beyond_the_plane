@@ -1,0 +1,12 @@
+{
+  "name": "beyond-the-plane",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A one-dimensional view into a three-dimensional mystery.",
+  "scripts": {
+    "dev": "node scripts/server.cjs",
+    "start": "node scripts/server.cjs",
+    "test": "node --test tests/*.test.cjs",
+    "check": "node --check src/geometry.js && node --check src/model.js && node --check src/render.js && node --check src/app.js"
+  }
+}
