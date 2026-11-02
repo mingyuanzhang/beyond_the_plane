@@ -52,28 +52,29 @@ test('forward/reverse stop at boundaries and can restart; all controls work on l
   const m=new Model();m.scrub(.999);m.play(1);m.tick(.1);assert.equal(m.time,1);assert.equal(m.playing,false);
   m.play(-1);m.tick(.1);assert.ok(m.time<1);m.scrub(.001);m.play(-1);m.tick(.1);assert.equal(m.time,0);assert.equal(m.playing,false);m.play(1);m.tick(.1);assert.ok(m.time>0);
 });
-test('twenty distinct experiments have valid, unambiguous candidate sets',()=>{
-  assert.equal(levels.length,20);assert.equal(new Set(levels.map(l=>l.answer)).size,20);
+test('fifteen distinct experiments have valid, unambiguous candidate sets',()=>{
+  assert.equal(levels.length,15);assert.equal(new Set(levels.map(l=>l.answer)).size,15);
   for(const [index,level] of levels.entries()){
     assert.ok(level.options.includes(level.answer));assert.equal(new Set(level.options).size,level.options.length);
-    assert.equal(level.options.length,index<7?3:4);
+    assert.equal(level.options.length,index<2?3:index<10?4:index===14?6:5);
     for(const id of level.options)assert.ok(G.shapes[id],id);
   }
 });
 test('guessing is explicit, freezes time, and can be cancelled without losing the viewpoint',()=>{
   const m=new Model();m.scrub(.43);m.move(1.2);m.play();m.select(m.level.answer);
   assert.equal(m.selected,null);assert.equal(m.answer(),false);assert.equal(m.guessing,false);
-  m.beginGuess();assert.equal(m.playing,false);m.select(m.level.answer);assert.equal(m.selected,'sphere');
+  m.beginGuess();assert.equal(m.playing,false);m.select(m.level.answer);assert.equal(m.selected,'cone');
   m.endGuess();assert.equal(m.guessing,false);assert.equal(m.selected,null);assert.equal(m.revealed,false);assert.equal(m.time,.43);assert.ok(Math.abs(m.angle-1.2)<1e-10);
   m.beginGuess();assert.equal(m.answer(),false);m.load(1);assert.equal(m.guessing,false);
 });
 test('answer locking, retries, and completion survive the new guessing phase',()=>{
   const m=new Model();m.beginGuess();m.select('missing');assert.equal(m.selected,null);
-  m.select(m.level.answer);assert.equal(m.answer(),true);assert.equal(m.correct,true);assert.ok(m.completed.has(0));m.select('cube');assert.equal(m.selected,'sphere');assert.equal(m.answer(),false);assert.equal(m.beginGuess(),false);
-  m.load(1);m.beginGuess();m.select('cone');m.answer();assert.equal(m.correct,false);assert.equal(m.completed.has(1),false);m.load(1);assert.equal(m.revealed,false);assert.equal(m.selected,null);
+  m.select(m.level.answer);assert.equal(m.answer(),true);assert.equal(m.correct,true);assert.ok(m.completed.has(0));m.select('pyramid');assert.equal(m.selected,'cone');assert.equal(m.answer(),false);assert.equal(m.beginGuess(),false);
+  m.load(1);m.beginGuess();m.select('cylinder');m.answer();assert.equal(m.correct,false);assert.equal(m.completed.has(1),false);m.load(1);assert.equal(m.revealed,false);assert.equal(m.selected,null);
 });
-test('stable progress IDs and legacy migration preserve solved puzzles after reordering',()=>{
-  const m=new Model();m.restoreLegacy('[0,6,7,8,999,-1,"2",null]');assert.deepEqual([...m.completed],[0,9,15,13]);
-  const saved=m.save(),restored=new Model();restored.restore(saved);assert.deepEqual([...restored.completed],[0,9,15,13]);
-  m.restore('["sphere","linkedRings","missing",999,null]');assert.deepEqual([...m.completed],[0,19]);m.restore('garbage');assert.deepEqual([...m.completed],[0,19]);
+test('stable progress IDs keep solved puzzles that survive the reordering',()=>{
+  const m=new Model();m.restoreLegacy('[2,7,999,-1,"2",null]');assert.deepEqual([...m.completed],[0]);
+  m.restore('["cone","linkedRings","sphere","missing",999,null]');assert.deepEqual([...m.completed],[0,5]);
+  const saved=m.save(),restored=new Model();restored.restore(saved);assert.deepEqual([...restored.completed],[0,5]);
+  m.restore('garbage');assert.deepEqual([...m.completed],[0,5]);
 });

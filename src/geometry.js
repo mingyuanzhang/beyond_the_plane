@@ -113,10 +113,71 @@
   add('counterTrefoil','Reversing three-lobe',column({sides:72,radius:lobeRadius(3,.24),twist:t=>Math.sin(t*Math.PI)*Math.PI*.85}), 'The lobed slices turn and then reverse. A sequence of frozen observations reveals the reversal that a steady twist cannot explain.');
   add('taperTrefoil','Tapered three-lobe',column({sides:72,radius:(a,t)=>(.72+.24*Math.cos(3*a))*(1-.35*t),twist:t=>t*Math.PI*.85}), 'The lobed slices shrink as they turn. Track both the angular pattern and the overall width through time.');
   const smallRing=ring(.65,.12),sideRing=rotate(smallRing,0,0,Math.PI/2);
-  add('linkedRings','Linked rings',combine(translate(smallRing,-.325,0,0),translate(sideRing,.325,0,0)), 'Two perpendicular rings interlock. Several separate pieces can hide behind each other; reconstruct their relative positions by combining time with a full orbit.');
+  const flatRing=rotate(smallRing,Math.PI/2,0,0);
+  add('linkedRings','Linked rings',combine(translate(smallRing,-.325,0,0),translate(flatRing,.325,0,0)), 'Two perpendicular rings interlock: one stands upright and the other lies flat, threaded through it. Several separate pieces can hide behind each other; reconstruct their relative positions by combining time with a full orbit.');
   add('parallelRings','Parallel rings',combine(translate(smallRing,0,-.45,0),translate(smallRing,0,.45,0)), 'Two separate parallel rings cross together. Their middle slices can overlap from some viewpoints, but an orbit reveals their parallel arrangement.');
   add('offsetRings','Staggered rings',combine(translate(smallRing,0,-.35,-.4),translate(smallRing,0,.35,.4)), 'The two parallel rings cross at different heights. Their arrivals and departures are staggered, unlike rings that share the same vertical extent.');
   add('separateRings','Perpendicular rings',combine(translate(smallRing,-.65,0,0),translate(sideRing,.65,0,0)), 'Two perpendicular rings are spaced apart rather than linked. Look for the larger separation of their slice groups from several viewpoints.');
+  // Tubes swept along space curves support springs, frames, chains and knots.
+  function tube(curve,{radius=.13,steps=160,sides=12,closed=true}={}){
+    const pts=Array.from({length:steps+1},(_,j)=>curve(j/steps));
+    const tangent=j=>{const a=pts[closed?(j-1+steps)%steps:Math.max(0,j-1)],b=pts[closed?(j+1)%steps:Math.min(steps,j+1)];return norm(sub(b,a));};
+    let n=norm(cross(tangent(0),Math.abs(tangent(0)[2])<.9?[0,0,1]:[1,0,0]));
+    const vertices=[],faces=[],rows=closed?steps:steps+1;
+    for(let j=0;j<rows;j++){
+      const t=tangent(j);n=norm(sub(n,t.map(v=>v*dot(n,t))));const b=cross(t,n);
+      for(let i=0;i<sides;i++){const a=i*TAU/sides;vertices.push(pts[j].map((v,k)=>v+radius*(Math.cos(a)*n[k]+Math.sin(a)*b[k])));}
+    }
+    for(let j=0;j<(closed?rows:rows-1);j++)for(let i=0;i<sides;i++){
+      const nj=(j+1)%rows,a=j*sides+i,b=j*sides+(i+1)%sides,c=nj*sides+i,d=nj*sides+(i+1)%sides;
+      faces.push([a,b,c],[b,d,c]);
+    }
+    if(!closed)for(const j of [0,rows-1]){
+      const index=vertices.push(pts[j===0?0:steps].slice())-1;
+      for(let i=0;i<sides;i++){const a=j*sides+i,b=j*sides+(i+1)%sides;faces.push(j===0?[index,b,a]:[index,a,b]);}
+    }
+    return mesh(vertices,faces);
+  }
+  const mirror=m=>mesh(m.vertices.map(([x,y,z])=>[-x,y,z]),m.faces.map(([a,b,c])=>[a,c,b]));
+  const helix=({turns=2,strands=1,coil=.62,height=2.5,wire=.17,phase=0})=>combine(...Array.from({length:strands},(_,k)=>tube(s=>{const a=s*turns*TAU+k*TAU/strands+phase;return [coil*Math.cos(a),coil*Math.sin(a),(s-.5)*height];},{radius:wire,steps:Math.round(60*turns),closed:false})));
+  add('spring','Spring',helix({}), 'A single wire coils upward through two full turns. Each slice is one small blob that circles the center as time passes; follow it to count the turns.');
+  add('tightSpring','Tight spring',helix({turns:3}), 'The wire makes three full turns over the same height, so the blob circles the center faster than in a two-turn spring.');
+  add('doubleHelix','Double helix',helix({strands:2,wire:.15}), 'Two wires wind around the same axis on opposite sides. Every slice holds two blobs that orbit together, always facing each other across the center.');
+  add('leftSpring','Left-handed spring',mirror(helix({})), 'This spring is the mirror image of an ordinary spring. Its slice orbits the center in the opposite direction: note whether the blob drifts left or right in your view as time moves forward.');
+  add('leftTightSpring','Left-handed tight spring',mirror(helix({turns:3})), 'A mirror-image spring with three turns. The orbit runs the opposite way to an ordinary spring, and faster than a two-turn coil.');
+  const ringIn=(plane,r=.62,w=.11)=>tube(s=>{const a=s*TAU,c=r*Math.cos(a),d=r*Math.sin(a);return plane==='xz'?[c,0,d]:plane==='yz'?[0,c,d]:[c,d,0];},{radius:w,steps:72,sides:10});
+  const chainRing=(plane,x)=>translate(ringIn(plane),x,0,0);
+  add('ringChain','Three-ring chain',combine(chainRing('xz',-.9),chainRing('xy',0),chainRing('xz',.9)), 'Three rings hang in a chain: the outer two stand upright and the middle one lies flat, threaded through both. The flat ring appears all at once only around the middle moment.');
+  add('flatEndChain','Flat-ended chain',combine(chainRing('xy',-.9),chainRing('xz',0),chainRing('xy',.9)), 'Three rings form a chain: the outer two lie flat and the middle one stands upright, threaded through both. Both flat rings cross your world at the same instant.');
+  add('ringRow','Row of rings',combine(chainRing('xz',-1.55),chainRing('xy',0),chainRing('xz',1.55)), 'Three rings sit in a row without touching. Their pieces are spread farther apart than in a chain, where each ring threads through its neighbor.');
+  add('ringStack','Stacked rings',combine(...[-.6,0,.6].map(y=>translate(ringIn('xz',.62,.11),0,y,0))), 'Three upright rings stand side by side like coins in a rack. From the front they hide one another; from the side they separate into three matching pairs.');
+  const frame=(edges,w=.11)=>combine(...edges.map(([a,b])=>tube(s=>a.map((v,k)=>v+(b[k]-v)*s),{radius:w,steps:2,sides:10,closed:false})));
+  const cubeCorners=[[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]].map(p=>p.map(v=>v*.78));
+  const cubeEdges=[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]].map(([a,b])=>[cubeCorners[a],cubeCorners[b]]);
+  add('cubeFrame','Cube frame',frame(cubeEdges), 'Twelve rods outline a cube. Most slices show only four small dots at the corners; the full square outline flashes by only as the top and bottom edges cross your world.');
+  add('tiltedCubeFrame','Tilted cube frame',rotate(frame(cubeEdges),.5,.45,.2), 'A tilted wire cube. Rods cross your world at different moments, so the dots appear, slide, and merge in an irregular order rather than all at once.');
+  const octa=[[1.15,0,0],[-1.15,0,0],[0,1.15,0],[0,-1.15,0],[0,0,1.3],[0,0,-1.3]];
+  add('octaFrame','Octahedron frame',frame([[0,2],[2,1],[1,3],[3,0],...[0,1,2,3].flatMap(i=>[[i,4],[i,5]])].map(([a,b])=>[octa[a],octa[b]])), 'Wire edges outline two pyramids joined at their bases. Four dots spread apart toward the middle, flash into a square, then gather again.');
+  const tri=[0,1,2].map(i=>[1.05*Math.cos(i*TAU/3+.3),1.05*Math.sin(i*TAU/3+.3)]);
+  add('prismFrame','Triangular frame',frame([...[0,1,2].flatMap(i=>[[[...tri[i],-1],[...tri[(i+1)%3],-1]],[[...tri[i],1],[...tri[(i+1)%3],1]],[[...tri[i],-1],[...tri[i],1]]])]), 'Nine rods outline a triangular prism. Only three dots persist through the middle of the passage, and a triangle flashes by at each end.');
+  const planet=sphere=>transform(sphere,([x,y,z])=>[x*.5,y*.5,z*.5]);
+  const orbit=(ax,ay)=>rotate(ringIn('xy',1.1,.09),ax,ay,0);
+  add('ringedPlanet','Ringed sphere',combine(planet(shapes.sphere.mesh),orbit(.55,.2)), 'A sphere wears a tilted ring. The ring arrives first as two pieces on one side, sweeps across the sphere, and leaves on the other side.');
+  add('flatPlanet','Level ringed sphere',combine(planet(shapes.sphere.mesh),orbit(0,0)), 'The ring lies level, so it crosses your world all at once: a single moment when the full circle surrounds the sphere’s widest slice.');
+  add('uprightPlanet','Upright ringed sphere',combine(planet(shapes.sphere.mesh),orbit(Math.PI/2,0)), 'The ring stands upright around the sphere. Its two pieces sit on opposite sides throughout, with the sphere’s slice growing and shrinking between them.');
+  add('twinMoons','Sphere with two moons',combine(planet(shapes.sphere.mesh),transform(shapes.sphere.mesh,([x,y,z])=>[x*.24+1.05,y*.24,z*.24+.5]),transform(shapes.sphere.mesh,([x,y,z])=>[x*.24-1.05,y*.24,z*.24-.5])), 'Two small moons float on opposite sides of the sphere at different heights. Each appears and vanishes on its own, unlike a continuous ring.');
+  const knot=(p,q,w=.13)=>tube(s=>{const a=s*TAU,k=.8+.38*Math.cos(q*a);return [k*Math.cos(p*a),.38*Math.sin(q*a),k*Math.sin(p*a)];},{radius:w,steps:260});
+  add('trefoilKnot','Trefoil knot',knot(2,3), 'A single closed tube ties itself in a trefoil knot, standing upright. Its slices break into several pieces that drift around one another as the knot crosses over itself.');
+  add('mirrorKnot','Mirror trefoil knot',mirror(knot(2,3)), 'This is the mirror image of the trefoil knot; no rotation turns one into the other. Watch which way the crossing pieces drift as time moves forward, then compare from a second side.');
+  add('cinquefoilKnot','Cinquefoil knot',knot(2,5,.11), 'A single tube winds around five times, tying a cinquefoil knot. Its slices carry more pieces than a trefoil, crowding and occluding one another.');
+  add('wavyLoop','Wavy loop',tube(s=>{const a=s*TAU;return [.9*Math.cos(a),.32*Math.sin(3*a),.9*Math.sin(a)];},{radius:.15,steps:200}), 'An untied loop weaves forward and back three times. Like a knot, its pieces sway in depth, but there are only ever two of them in a slice.');
+  const ellipse=(a,b,plane)=>tube(s=>{const c=a*Math.cos(s*TAU),d=b*Math.sin(s*TAU);return plane==='xy'?[c,d,0]:plane==='yz'?[0,c,d]:[d,0,c];},{radius:.1,steps:120,sides:10});
+  add('borromean','Borromean rings',combine(ellipse(1.25,.55,'xy'),ellipse(1.25,.55,'yz'),ellipse(1.25,.55,'xz')), 'Three oval rings lie in three perpendicular planes. No two are linked, yet together they cannot be separated. Each ring meets your world differently: one all at once, one in two pieces that stay fixed, one in pieces that slide apart.');
+  add('ovalTriad','Separated ovals',combine(translate(ellipse(1.1,.42,'xy'),0,0,-.9),ellipse(1.1,.42,'yz'),translate(ellipse(1.1,.42,'xz'),0,1.1,0)), 'Three perpendicular ovals float apart without passing through one another. Their pieces never share the center of a slice.');
+  add('mirrorTrefoil','Mirrored twisted three-lobe',column({sides:72,radius:lobeRadius(3,.24),twist:t=>-t*Math.PI*.85}), 'The three-lobed slices turn steadily, but the opposite way to the ordinary twisted column. Track one lobe forward through time and note which way it drifts.');
+  add('mirrorTaperTrefoil','Mirrored tapered three-lobe',column({sides:72,radius:(a,t)=>(.72+.24*Math.cos(3*a))*(1-.35*t),twist:t=>-t*Math.PI*.85}), 'The lobed slices shrink while turning the opposite way to the tapered three-lobe.');
+  add('tiltedKnot','Tilted trefoil knot',rotate(shapes.trefoilKnot.mesh,.6,.35,0), 'The trefoil knot crosses your world at a tilt, so its pieces arrive and leave out of step instead of symmetrically.');
+  add('tiltedMirrorKnot','Tilted mirror knot',rotate(shapes.mirrorKnot.mesh,.6,.35,0), 'A tilted mirror-image trefoil. Its pieces arrive out of step, drifting the opposite way to the tilted trefoil.');
   // Half-open edge crossings handle vertices exactly on the slicing plane.
   function slice(m,z) {
     const segments=[];

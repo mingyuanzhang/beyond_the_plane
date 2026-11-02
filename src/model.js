@@ -1,240 +1,191 @@
 (function(root){
   'use strict';
   const levels=[
-  {
-    "title": "A passing presence",
-    "chapter": "FOUNDATIONS",
-    "answer": "sphere",
-    "options": [
-      "cube",
-      "sphere",
-      "cone"
-    ],
-    "clue": "Watch one full passage, then freeze a moment and circle it. Build a mental picture before guessing."
-  },
-  {
-    "title": "Around the corner",
-    "chapter": "FOUNDATIONS",
-    "answer": "cube",
-    "options": [
-      "cylinder",
-      "cone",
-      "cube"
-    ],
-    "clue": "Watch one full passage, then freeze a moment and circle it. Build a mental picture before guessing."
-  },
-  {
-    "title": "Down to a point",
-    "chapter": "FOUNDATIONS",
-    "answer": "cone",
-    "options": [
-      "pyramid",
-      "cone",
-      "cylinder"
-    ],
-    "clue": "Watch one full passage, then freeze a moment and circle it. Build a mental picture before guessing."
-  },
-  {
-    "title": "A steady presence",
-    "chapter": "FOUNDATIONS",
-    "answer": "cylinder",
-    "options": [
-      "sphere",
-      "cube",
-      "cylinder"
-    ],
-    "clue": "Watch one full passage, then freeze a moment and circle it. Build a mental picture before guessing."
-  },
-  {
-    "title": "A different kind of point",
-    "chapter": "FACETS & PROFILES",
-    "answer": "pyramid",
-    "options": [
-      "cone",
-      "pyramid",
-      "frustum"
-    ],
-    "clue": "Watch one full passage, then freeze a moment and circle it. Build a mental picture before guessing."
-  },
-  {
-    "title": "Another side to the story",
-    "chapter": "FACETS & PROFILES",
-    "answer": "ellipsoid",
-    "options": [
-      "ellipsoid",
-      "sphere",
-      "cylinder"
-    ],
-    "clue": "Compare the same moment from several viewpoints. Then check whether your explanation fits the whole passage."
-  },
-  {
-    "title": "Almost familiar",
-    "chapter": "FACETS & PROFILES",
-    "answer": "hexPrism",
-    "options": [
-      "octPrism",
-      "cylinder",
-      "hexPrism"
-    ],
-    "clue": "Compare the same moment from several viewpoints. Then check whether your explanation fits the whole passage."
-  },
-  {
-    "title": "An incomplete story",
-    "chapter": "FACETS & PROFILES",
-    "answer": "frustum",
-    "options": [
-      "pyramidFrustum",
-      "cone",
-      "cylinder",
-      "frustum"
-    ],
-    "clue": "Compare the same moment from several viewpoints. Then check whether your explanation fits the whole passage."
-  },
-  {
-    "title": "Two halves of a whole",
-    "chapter": "CHANGING SECTIONS",
-    "answer": "bipyramid",
-    "options": [
-      "doubleCone",
-      "bipyramid",
-      "ellipsoid",
-      "tiltedCube"
-    ],
-    "clue": "Compare the same moment from several viewpoints. Then check whether your explanation fits the whole passage."
-  },
-  {
-    "title": "An unexpected angle",
-    "chapter": "CHANGING SECTIONS",
-    "answer": "tiltedCube",
-    "options": [
-      "skewPrism",
-      "bipyramid",
-      "tiltedCube",
-      "cube"
-    ],
-    "clue": "Compare the same moment from several viewpoints. Then check whether your explanation fits the whole passage."
-  },
-  {
-    "title": "A shifting impression",
-    "chapter": "CHANGING SECTIONS",
-    "answer": "skewPrism",
-    "options": [
-      "twistedPrism",
-      "tiltedCube",
-      "cube",
-      "skewPrism"
-    ],
-    "clue": "Compare arrival, middle, and departure. Follow the position of each visible edge as well as its width."
-  },
-  {
-    "title": "A quiet turn",
-    "chapter": "CHANGING SECTIONS",
-    "answer": "twistedPrism",
-    "options": [
-      "twistedPrism",
-      "counterTwist",
-      "skewPrism",
-      "twistedTaper"
-    ],
-    "clue": "Compare arrival, middle, and departure. Follow the position of each visible edge as well as its width."
-  },
-  {
-    "title": "Through the narrow place",
-    "chapter": "COMPOUND PROFILES",
-    "answer": "hourglass",
-    "options": [
-      "dumbbell",
-      "spindle",
-      "hourglass",
-      "doubleCone"
-    ],
-    "clue": "Compare arrival, middle, and departure. Follow the position of each visible edge as well as its width."
-  },
-  {
-    "title": "The whole story",
-    "chapter": "COMPOUND PROFILES",
-    "answer": "dumbbell",
-    "options": [
-      "unequalDumbbell",
-      "dumbbell",
-      "threeBeads",
-      "hourglass"
-    ],
-    "clue": "Compare arrival, middle, and departure. Follow the position of each visible edge as well as its width."
-  },
-  {
-    "title": "Off the beaten path",
-    "chapter": "COMPOUND PROFILES",
-    "answer": "offcenterVase",
-    "options": [
-      "vase",
-      "tiltedVase",
-      "bellows",
-      "offcenterVase"
-    ],
-    "clue": "Compare arrival, middle, and departure. Follow the position of each visible edge as well as its width."
-  },
-  {
-    "title": "The space between",
-    "chapter": "HIDDEN CONNECTIONS",
-    "answer": "torus",
-    "options": [
-      "tiltedRing",
-      "torus",
-      "ellipticRing",
-      "thickRing"
-    ],
-    "clue": "Take your time. A convincing explanation must account for every moment and every viewpoint."
-  },
-  {
-    "title": "An opening elsewhere",
-    "chapter": "HIDDEN CONNECTIONS",
-    "answer": "tiltedRing",
-    "options": [
-      "ellipticRing",
-      "thickRing",
-      "tiltedRing",
-      "torus"
-    ],
-    "clue": "Take your time. A convincing explanation must account for every moment and every viewpoint."
-  },
-  {
-    "title": "A recurring pattern",
-    "chapter": "SPATIAL RECONSTRUCTION",
-    "answer": "trefoilColumn",
-    "options": [
-      "trefoilColumn",
-      "starColumn",
-      "flutedColumn",
-      "twistedTrefoil"
-    ],
-    "clue": "Take your time. A convincing explanation must account for every moment and every viewpoint."
-  },
-  {
-    "title": "Follow the same edge",
-    "chapter": "SPATIAL RECONSTRUCTION",
-    "answer": "twistedTrefoil",
-    "options": [
-      "counterTrefoil",
-      "trefoilColumn",
-      "taperTrefoil",
-      "twistedTrefoil"
-    ],
-    "clue": "Take your time. A convincing explanation must account for every moment and every viewpoint."
-  },
-  {
-    "title": "Beyond the obvious",
-    "chapter": "SPATIAL RECONSTRUCTION",
-    "answer": "linkedRings",
-    "options": [
-      "parallelRings",
-      "linkedRings",
-      "offsetRings",
-      "separateRings"
-    ],
-    "clue": "Take your time. A convincing explanation must account for every moment and every viewpoint."
-  }
-];
+    {
+      "title": "Down to a point",
+      "chapter": "WARM-UP",
+      "answer": "cone",
+      "options": [
+        "pyramid",
+        "cone",
+        "cylinder"
+      ],
+      "clue": "Watch one full passage, then freeze a moment and circle it. Build a mental picture before guessing."
+    },
+    {
+      "title": "Almost familiar",
+      "chapter": "WARM-UP",
+      "answer": "hexPrism",
+      "options": [
+        "octPrism",
+        "cylinder",
+        "hexPrism"
+      ],
+      "clue": "Compare the same moment from several viewpoints. Then check whether your explanation fits the whole passage."
+    },
+    {
+      "title": "A quiet turn",
+      "chapter": "WARM-UP",
+      "answer": "twistedPrism",
+      "options": [
+        "twistedPrism",
+        "counterTwist",
+        "skewPrism",
+        "twistedTaper"
+      ],
+      "clue": "Compare arrival, middle, and departure. Follow the position of each visible edge as well as its width."
+    },
+    {
+      "title": "An opening elsewhere",
+      "chapter": "WARM-UP",
+      "answer": "tiltedRing",
+      "options": [
+        "ellipticRing",
+        "thickRing",
+        "tiltedRing",
+        "torus"
+      ],
+      "clue": "Take your time. A convincing explanation must account for every moment and every viewpoint."
+    },
+    {
+      "title": "Follow the same edge",
+      "chapter": "WARM-UP",
+      "answer": "twistedTrefoil",
+      "options": [
+        "counterTrefoil",
+        "trefoilColumn",
+        "taperTrefoil",
+        "twistedTrefoil"
+      ],
+      "clue": "Take your time. A convincing explanation must account for every moment and every viewpoint."
+    },
+    {
+      "title": "Beyond the obvious",
+      "chapter": "ASSEMBLIES",
+      "answer": "linkedRings",
+      "options": [
+        "parallelRings",
+        "linkedRings",
+        "offsetRings",
+        "separateRings"
+      ],
+      "clue": "Count the separate pieces at each moment, and note when they appear, merge, and vanish. Then walk around to find which pieces sit in front."
+    },
+    {
+      "title": "Around and around",
+      "chapter": "ASSEMBLIES",
+      "answer": "spring",
+      "options": [
+        "tightSpring",
+        "doubleHelix",
+        "spring",
+        "twistedTrefoil"
+      ],
+      "clue": "Count the separate pieces at each moment, and note when they appear, merge, and vanish. Then walk around to find which pieces sit in front."
+    },
+    {
+      "title": "Bare bones",
+      "chapter": "ASSEMBLIES",
+      "answer": "cubeFrame",
+      "options": [
+        "prismFrame",
+        "cubeFrame",
+        "octaFrame",
+        "tiltedCubeFrame"
+      ],
+      "clue": "Count the separate pieces at each moment, and note when they appear, merge, and vanish. Then walk around to find which pieces sit in front."
+    },
+    {
+      "title": "Something in orbit",
+      "chapter": "ASSEMBLIES",
+      "answer": "ringedPlanet",
+      "options": [
+        "flatPlanet",
+        "uprightPlanet",
+        "twinMoons",
+        "ringedPlanet"
+      ],
+      "clue": "Count the separate pieces at each moment, and note when they appear, merge, and vanish. Then walk around to find which pieces sit in front."
+    },
+    {
+      "title": "Strength in numbers",
+      "chapter": "ASSEMBLIES",
+      "answer": "ringChain",
+      "options": [
+        "ringChain",
+        "ringRow",
+        "flatEndChain",
+        "ringStack"
+      ],
+      "clue": "Count the separate pieces at each moment, and note when they appear, merge, and vanish. Then walk around to find which pieces sit in front."
+    },
+    {
+      "title": "The other hand",
+      "chapter": "MIRRORS & KNOTS",
+      "answer": "leftSpring",
+      "options": [
+        "spring",
+        "leftTightSpring",
+        "leftSpring",
+        "doubleHelix",
+        "tightSpring"
+      ],
+      "clue": "Some candidates are mirror images of one another. Step forward through time and note which way each piece drifts across your view, then check the same moment from a second side."
+    },
+    {
+      "title": "Turning the other way",
+      "chapter": "MIRRORS & KNOTS",
+      "answer": "mirrorTrefoil",
+      "options": [
+        "twistedTrefoil",
+        "mirrorTrefoil",
+        "counterTrefoil",
+        "taperTrefoil",
+        "mirrorTaperTrefoil"
+      ],
+      "clue": "Some candidates are mirror images of one another. Step forward through time and note which way each piece drifts across your view, then check the same moment from a second side."
+    },
+    {
+      "title": "Tied up",
+      "chapter": "MIRRORS & KNOTS",
+      "answer": "trefoilKnot",
+      "options": [
+        "wavyLoop",
+        "cinquefoilKnot",
+        "trefoilKnot",
+        "torus",
+        "linkedRings"
+      ],
+      "clue": "Count the separate pieces at each moment, and note when they appear, merge, and vanish. Then walk around to find which pieces sit in front."
+    },
+    {
+      "title": "Inseparable",
+      "chapter": "MIRRORS & KNOTS",
+      "answer": "borromean",
+      "options": [
+        "ovalTriad",
+        "ringChain",
+        "borromean",
+        "flatEndChain",
+        "ringStack"
+      ],
+      "clue": "Count the separate pieces at each moment, and note when they appear, merge, and vanish. Then walk around to find which pieces sit in front."
+    },
+    {
+      "title": "Through the looking glass",
+      "chapter": "MIRRORS & KNOTS",
+      "answer": "mirrorKnot",
+      "options": [
+        "trefoilKnot",
+        "cinquefoilKnot",
+        "wavyLoop",
+        "mirrorKnot",
+        "tiltedKnot",
+        "tiltedMirrorKnot"
+      ],
+      "clue": "Some candidates are mirror images of one another. Step forward through time and note which way each piece drifts across your view, then check the same moment from a second side."
+    }
+  ];
   class Model {
     constructor(){this.speed=1;this.angle=0;this.completed=new Set();this.load(0);}
     load(index){this.index=index;this.time=.08;this.angle=0;this.playing=true;this.direction=1;this.selected=null;this.guessing=false;this.revealed=false;this.correct=false;}
